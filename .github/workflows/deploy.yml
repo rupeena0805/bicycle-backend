@@ -3,11 +3,12 @@ name: Deploy Backend
 on:
   push:
     branches:
-      - main   # change if your branch is 'master' or something else
+      - main
 
 jobs:
   deploy:
-    runs-on: self-hosted   # tells GitHub to use your VM runner
+    runs-on: self-hosted
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -15,18 +16,14 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'   # match the version you installed on the VM
+          node-version: '20'
 
       - name: Install dependencies
-        working-directory: ./backend   # change if your backend folder is different
         run: npm ci
 
       - name: Restart with PM2
-        working-directory: ./backend
         run: |
-          # install pm2 if not already installed
           sudo npm install -g pm2
-          # if pm2 process exists, restart it; otherwise start it
           if pm2 describe mean-backend > /dev/null; then
             pm2 restart mean-backend
           else
