@@ -12,7 +12,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: false, parameterLimit: 500000000 }));
 
 app.get('/', (req, res) => {
-    res.send('This is Backend of Bicycle Renter/Hirer Server');
+    res.send('This is Backend of my Bicycle Renter Server');
 });
 
 app.use('/api', apiRoutes);
