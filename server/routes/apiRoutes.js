@@ -1,61 +1,45 @@
-const router = require('express').Router()
-const helper = require('../utilities/helpers')
+const router = require('express').Router();
 
+// Dummy data
+const dummyUser = { id: 1, name: 'Test User', email: 'test@example.com' };
+const dummyBicycle = { id: 1, name: 'Mountain Bike', pricePerHour: 50 };
+const dummyContact = { id: 1, name: 'John Doe', message: 'Hello' };
+const dummyDashboard = { totalUsers: 10, totalBicycles: 5 };
 
-//controllers
-const userController = require('../apis/user/userController')
+// Auth
+router.post('/user/login', (req, res) => res.json({ success: true, token: 'dummy-token' }));
 
+// User
+router.post('/user/add', (req, res) => res.json({ success: true, user: dummyUser }));
+router.post('/user/single', (req, res) => res.json(dummyUser));
+router.post('/user/renter/all', (req, res) => res.json([dummyUser]));
+router.post('/user/hirer/all', (req, res) => res.json([dummyUser]));
+router.post('/user/update', (req, res) => res.json({ success: true, user: dummyUser }));
 
-const bicycleController = require('../apis/bicycle/bicycleController')
-const bicycleRequestController = require('../apis/bicycleRequest/bicycleRequestController')
-const dashboardController = require('../apis/dashboard/dashboardController')
-const contactController = require('../apis/contact/contactController')
+// Bicycle
+router.post('/bicycle/all', (req, res) => res.json([dummyBicycle]));
+router.post('/bicycle/single', (req, res) => res.json(dummyBicycle));
+router.post('/bicycle/add', (req, res) => res.json({ success: true, bicycle: dummyBicycle }));
+router.post('/bicycle/update', (req, res) => res.json({ success: true, bicycle: dummyBicycle }));
+router.post('/bicycle/delete', (req, res) => res.json({ success: true }));
 
-//auth
-router.post('/user/login', userController.login)
-//user
-router.post('/user/add', helper.uploadImageFun.single('idProof_image'), userController.addUser)
+// Bicycle Request
+router.post('/bicycleRequest/all', (req, res) => res.json([]));
+router.post('/bicycleRequest/single', (req, res) => res.json({}));
+router.post('/bicycleRequest/add', (req, res) => res.json({ success: true }));
+router.post('/bicycleRequest/update', (req, res) => res.json({ success: true }));
 
-router.post('/bicycle/all', bicycleController.getAll)
-router.post('/bicycle/single', bicycleController.getSingle)
+// Contact
+router.post('/contact/add', (req, res) => res.json({ success: true }));
+router.post('/contact/all', (req, res) => res.json([dummyContact]));
+router.post('/contact/single', (req, res) => res.json(dummyContact));
 
-router.post('/contact/add', contactController.addContact)
+// Dashboard
+router.get('/dashboard', (req, res) => res.json(dummyDashboard));
 
-router.use(require('../middleware/tokenChecker'))
-
-//dashboard
-router.get('/dashboard', dashboardController.dashboard)
-
-//user
-router.post('/user/renter/all', userController.getAllRenter)
-router.post('/user/hirer/all', userController.getAllHirer)
-router.post('/user/single', userController.getSingle)
-
-router.post('/user/update', helper.uploadImageFun.single('idProof_image'), userController.updateUser)
-
-//bicycle
-router.post('/bicycle/add', helper.uploadImageFun.single('bicycle_image'), bicycleController.addBicycle)
-router.post('/bicycle/update', helper.uploadImageFun.single('bicycle_image'), bicycleController.updateBicycle)
-router.post('/bicycle/delete', bicycleController.deleteBicycle)
-
-//bicycleRequest
-router.post('/bicycleRequest/all', bicycleRequestController.getAll)
-router.post('/bicycleRequest/single', bicycleRequestController.getSingle)
-router.post('/bicycleRequest/add', bicycleRequestController.addBicycleRequest)
-router.post('/bicycleRequest/update', bicycleRequestController.updateBicycleRequest)
-
-//contact
-router.post('/contact/all', contactController.getAll)
-router.post('/contact/single', contactController.getSingle)
-
-
-
+// Catch-all 404
 router.all('*', (req, res) => {
-    res.send({
-        success: false,
-        status: 404,
-        message: "Invalid Address"
-    })
-})
+    res.status(404).json({ success: false, status: 404, message: "Invalid Address" });
+});
 
-module.exports = router
+module.exports = router;
